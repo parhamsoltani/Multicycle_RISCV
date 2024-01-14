@@ -1,0 +1,54 @@
+[*]
+[*] GTKWave Analyzer v3.3.108 (w)1999-2020 BSI
+[*] Sun Jan 14 18:28:16 2024
+[*]
+[dumpfile] "D:\Computer Organization IUST\Final Prj\CompOrg_Final_Project_FA23 (1)\Final_Project\Sources\Multiplier.vcd"
+[dumpfile_mtime] "Sun Jan 14 18:26:25 2024"
+[dumpfile_size] 4266
+[savefile] "D:\Computer Organization IUST\Final Prj\CompOrg_Final_Project_FA23 (1)\Final_Project\Sources\Multiplier_waveform.gtkw"
+[timestart] 1
+[size] 2560 1488
+[pos] -367 -364
+*-0.079286 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] Multiplier_tb.
+[sst_width] 298
+[signals_width] 305
+[sst_expanded] 1
+[sst_vpaned_height] 464
+@28
+Multiplier_tb.uut.adjacent_jump
+Multiplier_tb.uut.adjacent_jump_1
+@22
+Multiplier_tb.uut.bit_inverted_1[3:0]
+Multiplier_tb.uut.bit_inverted_2[3:0]
+@28
+Multiplier_tb.uut.carry_bits[2:0]
+@22
+Multiplier_tb.uut.carry_status[7:0]
+@28
+Multiplier_tb.uut.enable
+@420
+Multiplier_tb.uut.i
+@28
+Multiplier_tb.uut.is_negative
+Multiplier_tb.uut.is_negative_result
+@420
+Multiplier_tb.uut.j
+@22
+Multiplier_tb.uut.neg[3:0]
+@28
+Multiplier_tb.uut.next_adjacent_jump
+Multiplier_tb.uut.next_adjacent_jump_1
+@22
+Multiplier_tb.uut.operand_1[31:0]
+Multiplier_tb.uut.operand_1_complement[7:0]
+Multiplier_tb.uut.operand_2[31:0]
+Multiplier_tb.uut.partial_product_0[15:0]
+Multiplier_tb.uut.partial_product_1[15:0]
+Multiplier_tb.uut.partial_product_2[15:0]
+Multiplier_tb.uut.partial_product_3[15:0]
+Multiplier_tb.uut.product[31:0]
+Multiplier_tb.uut.product_bits[7:0]
+Multiplier_tb.uut.result[15:0]
+[pattern_trace] 1
+[pattern_trace] 0

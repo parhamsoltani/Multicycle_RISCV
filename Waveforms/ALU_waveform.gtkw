@@ -1,0 +1,28 @@
+[*]
+[*] GTKWave Analyzer v3.3.108 (w)1999-2020 BSI
+[*] Sat Jan 13 10:23:26 2024
+[*]
+[dumpfile] "D:\Computer Organization IUST\Final Prj\CompOrg_Final_Project_FA23 (1)\Final_Project\Sources\Arithmetic_Logic_Unit.vcd"
+[dumpfile_mtime] "Sat Jan 13 10:18:36 2024"
+[dumpfile_size] 1768
+[savefile] "D:\Computer Organization IUST\Final Prj\CompOrg_Final_Project_FA23 (1)\Final_Project\Sources\ALU_waveform.gtkw"
+[timestart] 0
+[size] 2560 1488
+[pos] -1 -1
+*0.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] Arithmetic_Logic_Unit_tb.
+[sst_width] 298
+[signals_width] 195
+[sst_expanded] 1
+[sst_vpaned_height] 464
+@22
+Arithmetic_Logic_Unit_tb.uut.operand_1[31:0]
+Arithmetic_Logic_Unit_tb.uut.operand_2[31:0]
+@28
+Arithmetic_Logic_Unit_tb.uut.operation[2:0]
+@22
+Arithmetic_Logic_Unit_tb.uut.result[31:0]
+@28
+Arithmetic_Logic_Unit_tb.uut.zero
+[pattern_trace] 1
+[pattern_trace] 0

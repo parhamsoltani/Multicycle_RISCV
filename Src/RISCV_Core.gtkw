@@ -1,0 +1,126 @@
+[*]
+[*] GTKWave Analyzer v3.3.100 (w)1999-2019 BSI
+[*] Mon Nov 20 12:10:02 2023
+[*]
+[dumpfile] "C:\Users\user\Desktop\CompOrgProject\Final_Project\RISCV_Core.vcd"
+[dumpfile_mtime] "Mon Nov 20 12:08:54 2023"
+[dumpfile_size] 32436
+[savefile] "C:\Users\user\Desktop\CompOrgProject\Final_Project\RISCV_Core.gtkw"
+[timestart] 206
+[size] 1920 1009
+[pos] -1 -1
+*-4.000000 254 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] RISCV_Core_Testbench.
+[sst_width] 357
+[signals_width] 444
+[sst_expanded] 1
+[sst_vpaned_height] 298
+@28
+RISCV_Core_Testbench.uut.clk
+RISCV_Core_Testbench.uut.reset
+@200
+-
+@22
+RISCV_Core_Testbench.uut.state[4:0]
+RISCV_Core_Testbench.uut.nextState[4:0]
+@200
+-
+@28
+RISCV_Core_Testbench.uut.irWrite
+@22
+RISCV_Core_Testbench.uut.ir[31:0]
+@200
+-
+@28
+RISCV_Core_Testbench.uut.pcWrite
+@22
+RISCV_Core_Testbench.uut.pc[31:0]
+@200
+-
+@22
+RISCV_Core_Testbench.uut.memoryAddress[31:0]
+RISCV_Core_Testbench.uut.memoryData[31:0]
+@28
+RISCV_Core_Testbench.uut.memoryReadWrite
+RISCV_Core_Testbench.uut.memoryEnable
+RISCV_Core_Testbench.uut.memoryReady
+@200
+-
+@22
+RISCV_Core_Testbench.uut.opcode[6:0]
+@28
+RISCV_Core_Testbench.uut.funct3[2:0]
+@22
+RISCV_Core_Testbench.uut.funct7[6:0]
+@200
+-
+@22
+RISCV_Core_Testbench.uut.immediate[31:0]
+@200
+-
+@22
+RISCV_Core_Testbench.uut.readData1[31:0]
+RISCV_Core_Testbench.uut.readData2[31:0]
+RISCV_Core_Testbench.uut.A[31:0]
+RISCV_Core_Testbench.uut.B[31:0]
+@200
+-
+@22
+RISCV_Core_Testbench.uut.aluOperand1[31:0]
+RISCV_Core_Testbench.uut.aluOperand2[31:0]
+RISCV_Core_Testbench.uut.aluResult[31:0]
+RISCV_Core_Testbench.uut.aluResultRegister[31:0]
+@29
+RISCV_Core_Testbench.uut.aluZero
+@28
+RISCV_Core_Testbench.uut.aluZeroRegister
+@200
+-
+@28
+RISCV_Core_Testbench.uut.multiplierEnable
+@22
+RISCV_Core_Testbench.uut.multiplierResult[31:0]
+RISCV_Core_Testbench.uut.multiplierResultRegister[31:0]
+@200
+-
+@22
+RISCV_Core_Testbench.uut.writeData[31:0]
+@200
+-
+@22
+RISCV_Core_Testbench.x0_zero[31:0]
+RISCV_Core_Testbench.x1_ra[31:0]
+RISCV_Core_Testbench.x2_sp[31:0]
+RISCV_Core_Testbench.x3_gp[31:0]
+RISCV_Core_Testbench.x4_tp[31:0]
+RISCV_Core_Testbench.x5_t0[31:0]
+RISCV_Core_Testbench.x6_t1[31:0]
+RISCV_Core_Testbench.x7_t2[31:0]
+RISCV_Core_Testbench.x8_s0[31:0]
+RISCV_Core_Testbench.x9_s1[31:0]
+RISCV_Core_Testbench.x10_a0[31:0]
+RISCV_Core_Testbench.x11_a1[31:0]
+@24
+RISCV_Core_Testbench.x12_a2[31:0]
+@22
+RISCV_Core_Testbench.x13_a3[31:0]
+RISCV_Core_Testbench.x14_a4[31:0]
+RISCV_Core_Testbench.x15_a5[31:0]
+RISCV_Core_Testbench.x16_a6[31:0]
+RISCV_Core_Testbench.x17_a7[31:0]
+RISCV_Core_Testbench.x18_s2[31:0]
+RISCV_Core_Testbench.x19_s3[31:0]
+RISCV_Core_Testbench.x20_s4[31:0]
+RISCV_Core_Testbench.x21_s5[31:0]
+RISCV_Core_Testbench.x22_s6[31:0]
+RISCV_Core_Testbench.x23_s7[31:0]
+RISCV_Core_Testbench.x24_s8[31:0]
+RISCV_Core_Testbench.x25_s9[31:0]
+RISCV_Core_Testbench.x26_s10[31:0]
+RISCV_Core_Testbench.x27_s11[31:0]
+RISCV_Core_Testbench.x28_t3[31:0]
+RISCV_Core_Testbench.x29_t4[31:0]
+RISCV_Core_Testbench.x30_t5[31:0]
+RISCV_Core_Testbench.x31_t6[31:0]
+[pattern_trace] 1
+[pattern_trace] 0
