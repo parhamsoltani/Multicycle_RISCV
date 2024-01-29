@@ -4,11 +4,8 @@ This project focuses on designing and implementing a multi-cycle RISC-V processo
 
 ### Description
 >The processor consists of three main units:
->
 >Memory
->
 >Data path
->
 >Controller
 
 In the multi-cycle design, a combined memory for instructions and data is used for more realistic and feasible operation. This enables reading the instruction in one cycle and reading or writing the data in another cycle.
