@@ -101,28 +101,17 @@ module RISCV_Core
 
             `FETCH_WAIT :
             begin
-                memoryEnable <= `ENABLE;
-                memoryReadWrite <= `READ;
-
-                if(memoryReady)
-                begin
-                    irWrite <= `ENABLE;   
-                    nextState <= `FETCH_DONE;   
-                end
-                else 
-                begin
-                 nextState <= `FETCH_WAIT;
-                end
+                if (memoryReady)
+                    nextState <= `FETCH_DONE;
             end
 
             `FETCH_DONE :
             begin
-                memoryEnable <= `DISABLE;
                 irWrite <= `ENABLE;
                 pcWrite <= `ENABLE;
                 aluSrcA <= `PC;
                 aluSrcB <= `FOUR;
-                aluOperation <= `ALU_ADD;
+                aluOperation <= `ADD;
                 nextState <= `DECODE;
             end
             
@@ -137,135 +126,235 @@ module RISCV_Core
                     `JALR       : instructionType <= `I_TYPE;
                     `BRANCH     : instructionType <= `B_TYPE;
                     `AUIPC      : instructionType <= `U_TYPE;
-                    `SYSTEM     : instructionType <= `I_TYPE;
                     `LUI        : instructionType <= `U_TYPE;
                     `STORE      : instructionType <= `S_TYPE;
                     `JAL        : instructionType <= `J_TYPE;
-                    default     : instructionType <= 3'bz;
                 endcase
                 nextState <= `EXECUTE;
             end
 
-
             `EXECUTE :
             begin
-                case(opcode)
-                    `OP:
-                     begin 
-                        aluSrcA <= `A;
-                        aluSrcB <= `B;
-                         
-                        case({funct7,funct3})
-                             {`ADD,`ADDSUB}:
-                             begin
-                                aluOperation <= `ALU_ADD;
-                                registerWriteSource <= `ALU;
-                                registerWriteEnable <= `ENABLE;
-                             end
-                            {`MULDIV , `MUL} :
-                            begin
-                                multiplierEnable <= `ENABLE;
-                                registerWriteSource <= `MULTIPLIER;
-                                registerWriteEnable <= `ENABLE;
-                            end
-                        endcase               
-                        
-                        nextState <= `FETCH_BEGIN;
-                     end
-
-                    `OP_IMM:
-                     begin
-                        aluSrcA <= `A;
-                        aluSrcB <= `IMMEDIATE;
-                         
-                         case(funct3)
-                              `ADDI:
-                              begin
-                                   aluOperation <= `ALU_ADD;
-                                   registerWriteSource <= `ALU;
-                                   registerWriteEnable <= `ENABLE;
-                              end
-
-                          
-                              `ANDI:
-                              begin
-                                  aluOperation <= `ALU_AND;
-                                  registerWriteSource <= `ALU;
-                                  registerWriteEnable <= `ENABLE;
-                              end
-
-                              `ORI:
-                              begin
-                                  aluOperation <= `ALU_OR;
-                                  registerWriteSource <= `ALU;
-                                  registerWriteEnable <= `ENABLE;
-                              end
-
-                              `XORI:
-                               begin
-                                   aluOperation <= `ALU_XOR;
-                                   registerWriteSource <= `ALU;
-                                   registerWriteEnable <= `ENABLE;
-                               end
-                               
-                         endcase
-                          
-                         nextState <= `FETCH_BEGIN;
-                     end
-                    
-
-                    `BRANCH:
+                case (instructionType)
+                    `R_TYPE     : 
                     begin
-                        aluSrcA <= `A;
-                        aluSrcB <= `B;
+                            aluSrcA <= `A;
+                            aluSrcB <= `B;
 
-                        case(funct3)
-                            `BNE:
-                            begin   
-                                aluOperation <= `ALU_SUB;
-                                registerWriteSource <= `ALU;
-                                registerWriteEnable <= `ENABLE;
-                            end  
-                              
-                        endcase
+                            case(funct3)
+                                `ADDSUB :
+                                begin
+                                    case (funct7)
+                                        `ADD : aluOperation = `ALU_ADD;
+                                        `SUB : aluOperation = `ALU_SUB;
+                                    endcase
+                                end
+                                `SLL : aluOperation = `ALU_SHIFT_LEFT;
+                                `SLT : aluOperation = `ALU_SLT;
+                                `SLTU: aluOperation = `ALU_SLTU;
+                                `XOR : aluOperation = `ALU_XOR;
+                                `SR  : aluOperation = `ALU_SR;
+                                `OR  : aluOperation = `ALU_OR;
+                                `AND : aluOperation = `ALU_AND;
 
+                            endcase
+                            registerWriteEnable <= `ENABLE;
+                            registerWriteSource <= `ALU_RESULT;
+                    end 
+
+                    `I_TYPE     :
+                    begin 
+                            aluSrcA <= `A;
+                            aluSrcB <= `IMMEDIATE;
+                            nextState <= `EXECUTE_BRANCH;
+                            case (funct3)
+                                `ADDI: aluOperation <= `ALU_ADD;
+                                `SLTI: aluOperation <= `ALU_SUB; // Subtract for set less than
+                                `SLTIU: aluOperation <= `ALU_SLTU;
+                                `XORI : aluOperation = `ALU_XOR;
+                                `SRI  : aluOperation = `ALU_SHIFT_RIGHT_LOGICAL;
+                                `ORI  : aluOperation = `ALU_OR;
+                                `ANDI : aluOperation = `ALU_AND;
+                                `SLLI : aluOperation = `ALU_SHIFT_LEFT;
+                            endcase
+                            registerWriteEnable <= `ENABLE;
+                            registerWriteSource <= `ALU_RESULT;
+                    end
+
+                    `B_TYPE     : 
+                    begin
+                            aluSrcA <= `A;
+                            aluSrcB <= `B;
+                            case (funct3)
+                                `BEQ: aluOperation <= `ALU_SUB;
+                                `BNE: aluOperation <= `ALU_SUB;
+                                `BLT: aluOperation <= `ALU_SUB;
+                                `BGE: aluOperation <= `ALU_SUB;
+                                `BLTU: aluOperation <= `ALU_SUB;
+                                `BGEU: aluOperation <= `ALU_SUB;
+                            endcase
                             nextState <= `EXECUTE_BRANCH;
                     end
-                endcase
-            end
 
-            `EXECUTE_BRANCH :
-             begin
-                case (funct3)
-                `BNE: 
-                begin
-                    if(!aluZeroRegister)
+                    `U_TYPE     :
                     begin
-                        aluSrcA <=`PC;
-                        aluSrcB <=`IMMEDIATE;
+                        // U-Type instructions (LUI and AUIPC)
+                        aluSrcA <= `IMMEDIATE;
+                        aluSrcB <= `ZERO; // This is a placeholder. 
                         aluOperation <= `ALU_ADD;
-                        nextState <= `TAKE_BRANCH;
-                    end 
-                    else 
-                    begin
-                        nextState <= `FETCH_BEGIN;    
+                        registerWriteEnable <= `ENABLE;
+                        registerWriteSource <= `ALU_RESULT;
                     end
-                end
+
+
+                    `S_TYPE     :
+                    begin
+                        // Store instructions
+                        aluSrcA <= `A;
+                        aluSrcB <= `IMMEDIATE;
+                        aluOperation <= `ALU_ADD; // For address calculation
+                        nextState <= `EXECUTE_BRANCH;
+                    end
+
+
+                    `J_TYPE     :
+                    begin
+                        // J-Type instruction (JAL)
+                        aluSrcA <= `PC;
+                        aluSrcB <= `IMMEDIATE;
+                        aluOperation <= `ALU_ADD; // For address calculation
+                        registerWriteEnable <= `ENABLE;
+                        registerWriteSource <= `ALU_RESULT;
+                        nextState <= `EXECUTE_BRANCH;
+                    end
+
+                    `MULDIV :
+                    begin
+                        case (funct3)
+                            `MUL :
+                            begin
+                                // Multiplication
+                                aluSrcA <= `A;
+                                aluSrcB <= `B;
+                                aluOperation = `ALU_MUL;
+                                registerWriteEnable <= `ENABLE;
+                                registerWriteSource <= `ALU_RESULT;
+                                multiplierEnable = `ENABLE;
+                            end
+
+                            `MULH :
+                            begin
+                                // Multiply High (signed)
+                                aluSrcA <= `A;
+                                aluSrcB <= `B;
+                                aluOperation = `ALU_MULH;
+                                registerWriteEnable <= `ENABLE;
+                                registerWriteSource <= `ALU_RESULT;
+                                multiplierEnable = `ENABLE;
+                            end
+
+                            `MULHSU :
+                            begin
+                                // Multiply High (signed-unsigned)
+                                aluSrcA <= `A;
+                                aluSrcB <= `B;
+                                aluOperation = `ALU_MULHSU;
+                                registerWriteEnable <= `ENABLE;
+                                registerWriteSource <= `ALU_RESULT;
+                                multiplierEnable = `ENABLE;
+                            end
+
+                            `MULHU :
+                            begin
+                                // Multiply High (unsigned)
+                                aluSrcA <= `A;
+                                aluSrcB <= `B;
+                                aluOperation = `ALU_MULHU;
+                                registerWriteEnable <= `ENABLE;
+                                registerWriteSource <= `ALU_RESULT;
+                                multiplierEnable = `ENABLE;
+                            end
+
+                            `DIV :
+                            begin
+                                // Division (signed)
+                                aluSrcA <= `A;
+                                aluSrcB <= `B;
+                                aluOperation = `ALU_DIV;
+                                registerWriteEnable <= `ENABLE;
+                                registerWriteSource <= `ALU_RESULT;
+                            end
+
+                            `DIVU :
+                            begin
+                                // Division (unsigned)
+                                aluSrcA <= `A;
+                                aluSrcB <= `B;
+                                aluOperation = `ALU_DIVU;
+                                registerWriteEnable <= `ENABLE;
+                                registerWriteSource <= `ALU_RESULT;
+                            end
+
+                            `REM :
+                            begin
+                                // Remainder (signed)
+                                aluSrcA <= `A;
+                                aluSrcB <= `B;
+                                aluOperation = `ALU_REM;
+                                registerWriteEnable <= `ENABLE;
+                                registerWriteSource <= `ALU_RESULT;
+                            end
+
+                            `REMU :
+                            begin
+                                // Remainder (unsigned)
+                                aluSrcA <= `A;
+                                aluSrcB <= `B;
+                                aluOperation = `ALU_REMU;
+                                registerWriteEnable <= `ENABLE;
+                                registerWriteSource <= `ALU_RESULT;
+                            end
+                        endcase
+                    end
+
+                    // ...
                 endcase
+                // Update nextState based on the executed instruction
+                `EXECUTE_BRANCH :
+                begin
+                    case (instructionType)
+                        `B_TYPE :
+                        begin
+                            case (funct3)
+                                `BEQ  : nextState = (aluZero) ? `TAKE_BRANCH : `NEXT_PC;
+                                `BNE  : nextState = (aluZero) ? `NEXT_PC : `TAKE_BRANCH;
+                                `BLT  : nextState = (aluZero) ? `TAKE_BRANCH : `NEXT_PC;
+                                `BGE  : nextState = (aluZero) ? `NEXT_PC : `TAKE_BRANCH;
+                                `BLTU : nextState = (aluZero) ? `TAKE_BRANCH : `NEXT_PC;
+                                `BGEU : nextState = (aluZero) ? `NEXT_PC : `TAKE_BRANCH;
+                            endcase
+                        end
+                        `I_TYPE :
+                        begin
+                            case (funct3)
+                                `JALR : nextState = (aluZero) ? `TAKE_BRANCH : `NEXT_PC;
+                                default: nextState = `NEXT_PC;
+                            endcase
+                        end
+
+                `TAKE_BRANCH :
+                begin
+                    pcWrite = `ENABLE;
+                    irWrite = `DISABLE;
+                    memoryDataRegisterWrite = `DISABLE;
+                    registerWriteEnable = `DISABLE;
+                    registerWriteSource = `bz;
+                    aluSrcA = `PC;
+                    aluSrcB = `IMMEDIATE;
+                    aluOperation = `ALU_ADD;
+                    nextState = `FETCH_BEGIN;
+                end
             end
-
-            `TAKE_BRANCH:
-            begin
-                aluSrcA <=`ALU_RESULT;
-                aluSrcB <=`FOUR;
-                aluOperation <= `ALU_SUB;
-                pcWrite <= `ENABLE;
-
-                nextState <=`FETCH_BEGIN;
-            end
-
-
-
             
             /* Additional States need to be declared here as follow:
             `NEW_STATE:
