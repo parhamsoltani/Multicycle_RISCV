@@ -13,7 +13,7 @@ module RISCV_Core
     input reset,
     output reg trap,
 
-    inout   [31 : 0] memoryData,
+    input   [31 : 0] memoryData,
     input   memoryReady,
     output  reg memoryEnable,
     output  reg memoryReadWrite,
@@ -104,50 +104,70 @@ module RISCV_Core
                 memoryEnable <= `ENABLE;
                 memoryReadWrite <= `READ;
 
-                if(memoryReady)
-                begin
+                if(memoryReady)begin
                     irWrite <= `ENABLE;   
                     nextState <= `FETCH_DONE;   
                 end
-                else 
-                begin
+                
+                else begin
                  nextState <= `FETCH_WAIT;
+                
                 end
+                
+
             end
 
             `FETCH_DONE :
             begin
+
                 memoryEnable <= `DISABLE;
-                irWrite <= `ENABLE;
-                pcWrite <= `ENABLE;
                 aluSrcA <= `PC;
                 aluSrcB <= `FOUR;
                 aluOperation <= `ALU_ADD;
+                pcWrite <= `ENABLE;
                 nextState <= `DECODE;
+            
             end
             
             `DECODE :
             begin
                 if (opcode == `SYSTEM) 
-                    trap <= `ENABLE;    
+                    trap <= `ENABLE;
+                
                 case (opcode)
-                    `OP         : instructionType <= `R_TYPE;
-                    `OP_IMM     : instructionType <= `I_TYPE;
-                    `LOAD       : instructionType <= `I_TYPE;
-                    `JALR       : instructionType <= `I_TYPE;
-                    `BRANCH     : instructionType <= `B_TYPE;
-                    `AUIPC      : instructionType <= `U_TYPE;
-                    `SYSTEM     : instructionType <= `I_TYPE;
-                    `LUI        : instructionType <= `U_TYPE;
-                    `STORE      : instructionType <= `S_TYPE;
-                    `JAL        : instructionType <= `J_TYPE;
-                    default     : instructionType <= 3'bz;
+                 `OP:
+                    instructionType <= `R_TYPE;
+
+                `OP_IMM:
+                    instructionType <= `I_TYPE;
+
+                 `BRANCH:
+                    instructionType <= `B_TYPE;
+
+                 `SYSTEM:
+                     instructionType <= `I_TYPE;
+
+                `JAL:
+                    instructionType <= `J_TYPE;         
+                
+                `JALR:
+                    instructionType <= `I_TYPE;
+
+                `STORE:
+                    instructionType <= `S_TYPE;
+
+                `LOAD:
+                    instructionType <= `I_TYPE;
+
+                 default: 
+                     instructionType <= 3'bz;
+            
                 endcase
-                nextState <= `EXECUTE;
+
+            nextState <= `EXECUTE;
             end
 
-
-            `EXECUTE :
+             `EXECUTE :
             begin
                 case(opcode)
                     `OP:
@@ -220,12 +240,78 @@ module RISCV_Core
                         aluSrcB <= `B;
 
                         case(funct3)
-                            `BNE:
-                            begin   
+                            /* `BEQ:
+                             begin
+                                ///ir[19:15]==ir[24:20]
+                                if(`A==`B)begin
+                                    
+                                    
+                                aluOperation <= `ALU_SUB;
+                                registerWriteSource <= `ALU;
+                                registerWriteEnable <= `ENABLE; 
+
+                                end
+                             end */
+                             `BNE:
+                              begin
+                                ///ir[19:15]!=ir[24:20]
+                               //if(`A != `B)begin
+                                    
                                 aluOperation <= `ALU_SUB;
                                 registerWriteSource <= `ALU;
                                 registerWriteEnable <= `ENABLE;
-                            end  
+                                end  
+
+                                  
+                              
+                             /* `BLTU:
+                              begin
+                                ///ir[19:15]<ir[24:20]
+                                if(`A < `B)begin
+                                aluOperation <= `ALU_SUB;
+                                registerWriteSource <= `ALU;
+                                registerWriteEnable <= `ENABLE;
+                                    
+                                end
+
+                            
+                              end
+                               */
+                            /*  `BGEU:
+                              begin
+                                ///ir[19:15]>ir[24:20]
+                                if(`A >`B)begin
+                                                                    aluOperation <= `ALU_SUB;
+                                registerWriteSource <= `ALU;
+                                registerWriteEnable <= `ENABLE;
+                                    
+                                end   
+
+                                 
+                              end
+                              */
+                            /* `BGE:
+                              begin
+                                //$signed(ir[19:15])>$signed(ir[24:20])
+                              if($signed(`A)>$signed(`B))begin
+                                
+                                aluOperation <= `ALU_SUB;
+                                registerWriteSource <= `ALU;
+                                registerWriteEnable <= `ENABLE;
+                              
+                              end     
+                              end */
+                              
+                             /* `BLT:
+                              begin
+                                //$signed(ir[19:15])<$signed(ir[24:20])
+                                if($signed(`A)<$signed(`B))begin
+                                                                    aluOperation <= `ALU_SUB;
+                                registerWriteSource <= `ALU;
+                                registerWriteEnable <= `ENABLE;
+                                
+                                end*/
+
                               
                         endcase
 
@@ -234,25 +320,26 @@ module RISCV_Core
                 endcase
             end
 
-            `EXECUTE_BRANCH :
+            
+              `EXECUTE_BRANCH :
              begin
                 case (funct3)
                 `BNE: 
                 begin
-                    if(!aluZeroRegister)
-                    begin
+                    if(!aluZeroRegister)begin
                         aluSrcA <=`PC;
                         aluSrcB <=`IMMEDIATE;
                         aluOperation <= `ALU_ADD;
                         nextState <= `TAKE_BRANCH;
-                    end 
-                    else 
-                    begin
+                    end else begin
+
                         nextState <= `FETCH_BEGIN;    
                     end
                 end
-                endcase
-            end
+            endcase
+         end
+            
+
 
             `TAKE_BRANCH:
             begin
@@ -263,16 +350,6 @@ module RISCV_Core
 
                 nextState <=`FETCH_BEGIN;
             end
-
-
-
-            
-            /* Additional States need to be declared here as follow:
-            `NEW_STATE:
-            begin
-
-            end
-            */
         endcase        
     end
 
