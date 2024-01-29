@@ -1,4 +1,3 @@
-
 #    Assembly Program of an ABI function that calculates factorial of n.
 #    Value of n is passed to this program as the first function argument.
 #    In Conventional RISC-V software, x10 or a0 is used as both the first function argument and return value.
@@ -9,12 +8,16 @@
 
 factorial:
     # Setup code, to be executed once
-    addi    a1, zero, 1
-    addi    a0, a0, 1
-    addi    a2, zero, 1
+        li t0,1
+        mv t1,a0
+    
 loop:
     # Main code implementing the factorial calculation
-    mul a1, a2, a1
-    addi a2 , a2 , 1
-    bne a2, a0, loop 
+     blez t1,exit
+     mul  t0,t0,t1
+     addi t1,t1,-1
+     j loop
+
+    exit:
+    mv t2,t0
     ebreak
