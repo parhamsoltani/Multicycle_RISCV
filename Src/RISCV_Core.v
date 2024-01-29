@@ -290,17 +290,17 @@ module RISCV_Core
                                  
                               end
                               */
-                            /* `BGE:
+                            `BGE:
                               begin
                                 //$signed(ir[19:15])>$signed(ir[24:20])
                               if($signed(`A)>$signed(`B))begin
                                 
                                 aluOperation <= `ALU_SUB;
-                                registerWriteSource <= `ALU;
-                                registerWriteEnable <= `ENABLE;
+                                //registerWriteSource <= `ALU;
+                                //registerWriteEnable <= `ENABLE;
                               
                               end     
-                              end */
+                              end 
                               
                              /* `BLT:
                               begin
